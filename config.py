@@ -10,7 +10,7 @@ class Config:
     CHAT_HISTORY_PATH = "app/database/chat_data.json"
     
     # Embedding Settings
-    EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     
     # LLM Settings (Using a free model or OpenAI if key is present)
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
