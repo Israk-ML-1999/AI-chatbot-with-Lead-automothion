@@ -8,6 +8,8 @@ A production-ready **RAG (Retrieval-Augmented Generation)** chatbot designed for
 ![ChromaDB](https://img.shields.io/badge/ChromaDB-Vector%20DB-purple)
 
 ---
+## UI 
+ 
 
 ## 🎯 Features
 
@@ -69,28 +71,7 @@ The company data was scraped from the Mysoft Heaven website using:
 2. Extracted text content from HTML
 3. Stored in Excel format with columns: `url`, `Path`, `content`
 
-### Data Cleaning Pipeline
-
-**Input:** Excel file (`data/mysoftheaven data.xlsx`) with raw HTML content
-
-**Cleaning Steps:** ([`ectraction_service.py`](app/Dtat_scrip/ectraction_service.py))
-
-```python
-def clean_text(self, text: str) -> str:
-    # 1. Remove HTML tags
-    text = re.sub(r'<[^>]+>', ' ', text)
-    
-    # 2. Remove HTML entities (&nbsp;, &quot;, etc.)
-    text = text.replace('&nbsp;', ' ').replace('&quot;', '"')
-    
-    # 3. Remove excessive whitespace
-    text = re.sub(r'\s+', ' ', text).strip()
-    
-    # 4. Remove copyright/footer noise
-    text = re.sub(r'Copyright.*?Ltd\.', '', text)
-    
-    return text
-```
+### Data Cleaning 
 
 **Output:** Clean text ready for embedding
 
@@ -118,13 +99,6 @@ def clean_text(self, text: str) -> str:
 - **Method:** Splits by sentences, then groups to ~400 chars
 - **Why?** Balances specificity with sufficient context for accurate retrieval
 
-**Implementation:** [`app/Dtat_scrip/ectraction_service.py`](app/Dtat_scrip/ectraction_service.py#L36-L61)
-
-```python
-CHUNK_SIZE = 400       # Configurable in config.py
-CHUNK_OVERLAP = 100    # Maintains context continuity
-```
-
 ---
 
 ### 2️⃣ Embedding Model Choice
@@ -138,8 +112,6 @@ CHUNK_OVERLAP = 100    # Maintains context continuity
 - ✅ **Battle-tested** - 5M+ downloads on Hugging Face
 
 **Alternative:** OpenAI `text-embedding-3-small` (if API key provided)
-
-**Implementation:** [`app/database/database.py`](app/database/database.py#L13)
 
 ---
 
@@ -171,9 +143,6 @@ User: "What is the weather today?"
 → No relevant chunks found
 → Response: "I'm sorry, I don't have information about that in my knowledge base."
 ```
-
-**Implementation:** [`app/chatbot_logic/llm_service.py`](app/chatbot_logic/llm_service.py#L51-L76)
-
 ---
 
 ### 4️⃣ Conversation Memory
@@ -197,8 +166,6 @@ User: "What is the weather today?"
 - Prevents token limit issues
 - Balances memory vs freshness
 
-**Implementation:** [`app/chatbot_logic/llm_service.py`](app/chatbot_logic/llm_service.py#L43-L50)
-
 ---
 
 ### 5️⃣ Confidence-Based Responses
@@ -220,9 +187,6 @@ CONTEXT FOUND: Yes
 - **Good Match (40%+):** Proceeds with response generation
 
 **Note:** No hard thresholds used - LLM decides if context is sufficient
-
-**Implementation:** [`app/chatbot_logic/llm_service.py`](app/chatbot_logic/llm_service.py#L91-L99)
-
 ---
 
 ## 🏢 Multi-Company Support (Future)
@@ -246,22 +210,6 @@ Each chunk already includes:
   "chunk_index": 42
 }
 ```
-
-**3. Suggested Implementation:**
-
-```python
-# Multi-tenant setup
-class MultiCompanyChatbot:
-    def __init__(self, company_id: str):
-        self.company_id = company_id
-        self.db_path = f"data/{company_id}/chroma_db"
-        self.data_path = f"data/{company_id}/data.xlsx"
-        
-    def route_query(self, query: str):
-        # Use company-specific vector DB
-        return self.search(self.db_path, query)
-```
-
 **Benefits:**
 - ✅ Isolated knowledge bases per company
 - ✅ Separate conversation histories
@@ -269,7 +217,6 @@ class MultiCompanyChatbot:
 - ✅ Scalable to N companies
 
 ---
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -366,47 +313,12 @@ mysoft-ai-chatbot/
 
 ## 🔧 Configuration
 
-**File:** `config.py`
-
-```python
-class Config:
-    # Paths
-    DATABASE_PATH = "data/chroma_db"
-    EXCEL_DATA_PATH = "data/mysoftheaven data.xlsx"
-    CHAT_HISTORY_PATH = "app/database/chat_data.json"
-    
-    # Embedding
-    EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-    
-    # Chunking
-    CHUNK_SIZE = 400
-    CHUNK_OVERLAP = 100
-    
-    # LLM (optional)
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-```
-
 ---
 
 ## 📊 API Endpoints
 
 ### `POST /api/chat`
 **Description:** Send a chat message
-
-**Request:**
-```json
-{
-  "query": "What services does Mysoft Heaven provide?"
-}
-```
-
-**Response:**
-```json
-{
-  "response": "Mysoft Heaven provides...",
-  "history": [...]
-}
-```
 
 ### `POST /api/refresh-data`
 **Description:** Re-index vector database from Excel
@@ -437,20 +349,7 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
 ---
-
-## 👨‍💻 Author
-
-**Mysoft Heaven (BD) Ltd.**
-
-For questions or support, please contact: [your-email@example.com]
-
----
-
 ## 🙏 Acknowledgments
 
 - LangChain for RAG orchestration
@@ -459,5 +358,3 @@ For questions or support, please contact: [your-email@example.com]
 - OpenAI for GPT-4 Turbo
 
 ---
-
-**⭐ If you find this project useful, please give it a star!**
