@@ -55,7 +55,59 @@ graph TB
 
 ---
 
+## 📊 Data Collection & Preprocessing
+
+### Data Scraping (Pre-processing)
+
+**Original Data Collection:**
+The company data was scraped from the Mysoft Heaven website using:
+- **BeautifulSoup4** - HTML parsing and extraction
+- **Requests** - HTTP requests to fetch web pages
+
+**Scraping Process:**
+1. Fetched company web pages (services, products, projects, etc.)
+2. Extracted text content from HTML
+3. Stored in Excel format with columns: `url`, `Path`, `content`
+
+### Data Cleaning Pipeline
+
+**Input:** Excel file (`data/mysoftheaven data.xlsx`) with raw HTML content
+
+**Cleaning Steps:** ([`ectraction_service.py`](app/Dtat_scrip/ectraction_service.py))
+
+```python
+def clean_text(self, text: str) -> str:
+    # 1. Remove HTML tags
+    text = re.sub(r'<[^>]+>', ' ', text)
+    
+    # 2. Remove HTML entities (&nbsp;, &quot;, etc.)
+    text = text.replace('&nbsp;', ' ').replace('&quot;', '"')
+    
+    # 3. Remove excessive whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    # 4. Remove copyright/footer noise
+    text = re.sub(r'Copyright.*?Ltd\.', '', text)
+    
+    return text
+```
+
+**Output:** Clean text ready for embedding
+
+**Column Usage:**
+- ✅ **content** - Used for RAG (after cleaning)
+- ❌ **url** - Stored as metadata only
+- ❌ **Path** - Stored as metadata only
+
+**Why Clean?**
+- Removes HTML artifacts that harm embedding quality
+- Reduces noise in vector search results
+- Improves semantic similarity matching
+
+---
+
 ## 📚 RAG Pipeline Details
+
 
 ### 1️⃣ Document Chunking Strategy
 
