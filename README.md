@@ -34,7 +34,7 @@ A production-ready **RAG (Retrieval-Augmented Generation)** chatbot designed for
 |-----------|-----------|
 | **Backend Framework** | FastAPI |
 | **LLM** | OpenAI GPT-4 Turbo (with fallback) |
-| **Embeddings** | Hugging Face `all-MiniLM-L6-v2` (local, free) |
+| **Embeddings** | Hugging Face `paraphrase-multilingual-MiniLM-L12-v2` (local, free) |
 | **Vector Database** | ChromaDB |
 | **Orchestration** | LangChain |
 | **Frontend** | HTML, CSS, JavaScript |
