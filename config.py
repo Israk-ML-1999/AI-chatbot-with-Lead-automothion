@@ -15,8 +15,6 @@ class Config:
     # LLM Settings (Using a free model or OpenAI if key is present)
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     
-    # Confidence Settings
-    SIMILARITY_THRESHOLD = 0.30  # Minimum similarity score (0-1) to consider results valid
     
     CHUNK_SIZE = 400
     CHUNK_OVERLAP = 100
